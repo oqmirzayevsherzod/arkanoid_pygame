@@ -33,12 +33,15 @@ SLIDE_FACTOR = 0.8
 MAX_BALL_SPEED_X = 8
 
 # --- Bonuses ---------------------------------------------------------------------
-BONUS_PROBABILITY = 0.3  
-BONUS_TYPES = ["extend", "multiball", "laser", "extra_life"]
+BONUS_PROBABILITY = 0.3
+BONUS_TYPES = [
+    "extend", "multiball", "laser", "extra_life",
+    "paddle_shrink", "ball_speedup", "ball_speeddown",
+]
 
 # --- Visuals -----------------------------------------------------------
-TRAIL_LENGTH = 6  
-PARTICLE_COUNT = 10  
+TRAIL_LENGTH = 6
+PARTICLE_COUNT = 10
 PARTICLE_LIFETIME = (12, 24)
 PARTICLE_SPEED = (1.5, 4.0)
 PARTICLE_GRAVITY = 0.15
@@ -55,6 +58,8 @@ YELLOW = (255, 255, 0)
 GREEN = (0, 255, 0)
 CYAN = (0, 255, 255)
 MAGENTA = (255, 0, 255)
+BLUE = (60, 140, 255)
+PINK = (255, 90, 150)
 PADDLE_COLOR = CYAN
 BALL_COLOR = WHITE
 

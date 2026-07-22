@@ -18,6 +18,7 @@ class Paddle:
         self.vx = 0
         self.extended = False
         self.laser = False
+        self.shrunk = False
 
     def move(self, keys: pygame.key.ScancodeWrapper) -> None:
         self.vx = 0
@@ -41,6 +42,14 @@ class Paddle:
             self.rect.width //= 2
             self.extended = False
 
+    def apply_shrink_bonus(self) -> None:
+        """Paddle Shrink bonus: paddle kengligini vaqtinchalik kamaytiradi."""
+        if not self.shrunk:
+            center = self.rect.centerx
+            self.rect.width = max(cfg.PADDLE_WIDTH // 2, self.rect.width // 2)
+            self.rect.centerx = center
+            self.shrunk = True
+
     def draw(self, screen: pygame.Surface) -> None:
         pygame.draw.rect(screen, cfg.PADDLE_COLOR, self.rect, border_radius=5)
 
@@ -61,10 +70,28 @@ class Ball:
         self.rect.x += self.vx
         self.rect.y += self.vy
 
+    def speed_up(self) -> None:
+        """Ball Speed Up bonus: tezlikni oshiradi, cheklov bilan."""
+        factor = 1.3
+        max_factor = 2.5
+        if abs(self.vx) < abs(cfg.BALL_SPEED_X) * max_factor:
+            self.vx *= factor
+        if abs(self.vy) < abs(cfg.BALL_SPEED_Y) * max_factor:
+            self.vy *= factor
+
+    def speed_down(self) -> None:
+        """Ball Speed Down bonus: tezlikni kamaytiradi, minimal chegara bilan."""
+        factor = 0.75
+        min_factor = 0.4
+        if abs(self.vx) > abs(cfg.BALL_SPEED_X) * min_factor:
+            self.vx *= factor
+        if abs(self.vy) > abs(cfg.BALL_SPEED_Y) * min_factor:
+            self.vy *= factor
+
     def draw(self, screen: pygame.Surface) -> None:
         trail_len = len(self.trail)
         for i, pos in enumerate(self.trail):
-            fade = (i + 1) / (trail_len + 1) 
+            fade = (i + 1) / (trail_len + 1)
             color = tuple(int(channel * fade) for channel in cfg.BALL_COLOR)
             pygame.draw.circle(screen, color, pos, self.radius)
         pygame.draw.circle(screen, cfg.BALL_COLOR, self.rect.center, self.radius)
@@ -111,6 +138,9 @@ class Bonus:
         "multiball": {"color": cfg.MAGENTA, "letter": "M"},
         "laser": {"color": cfg.YELLOW, "letter": "L"},
         "extra_life": {"color": cfg.CYAN, "letter": "1"},
+        "paddle_shrink": {"color": cfg.PINK, "letter": "S"},
+        "ball_speedup": {"color": cfg.ORANGE, "letter": "+"},
+        "ball_speeddown": {"color": cfg.BLUE, "letter": "-"},
     }
 
     _label_font: pygame.font.Font | None = None  # Lazy Creation
